@@ -4,8 +4,7 @@
 #include "./include/utils.h"
 #include "./include/queue.h"
 #include "./include/bfs.h"
-
-// #define INF __FLT_MAX__
+#include "./include/ucs.h"
 
 float** read_board(char* input_file, int* height, int* width){
     FILE* file;
@@ -59,7 +58,7 @@ int main(int argc, char** argv){
 
     board = read_board(argv[1], &height, &width);
 
-    float value = breadth_first_search(board, height, width,
+    float value = uniform_cost_search(board, height, width,
                         x_start, y_start, x_end, y_end);
 
     printf("%f\n", value);

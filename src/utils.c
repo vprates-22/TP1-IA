@@ -21,13 +21,13 @@ int** create_visited_matrix(int height, int width){
     return visited;
 }
 
-queue_node** create_path_matrix(int height, int width){
-    queue_node* default_value = init_queue_node(-1, -1, 0);
-    void** matrix = create_matrix(sizeof(queue_node), height, width, default_value);
+node** create_path_matrix(int height, int width){
+    node* default_value = malloc(sizeof(node));
+    init_node(default_value, -1, -1, -1);
+    void** matrix = create_matrix(sizeof(node), height, width, default_value);
     free(default_value);
 
-
-    queue_node** visited = (queue_node**)matrix;
+    node** visited = (node**)matrix;
     return visited;
 }
 
