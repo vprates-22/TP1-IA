@@ -12,7 +12,6 @@ void verify_bfs_neighbors(float** board, int height, int width,
             // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
             if(i == j || i+j == 0) 
                 continue;
-            // printf("%d %d\n", i, j);
             // impede segmentation fault
             if(0 > y+j || y+j >= height || 
                0 > x+i || x+i >= width) 

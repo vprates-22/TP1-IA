@@ -15,15 +15,22 @@ priority_queue* init_priority_queue(long max_size){
 }
 
 void swap(node* a, node* b){
-    node* temp = a;
-    a = b;
-    b = temp;
+    int x = a->x;
+    int y = a->y;
+    float value = a->value;
+
+    a->x = b->x;
+    a->y = b->y;
+    a->value = b->value;
+    
+    b->x = x;
+    b->y = y;
+    b->value = value;
 }
 
 void correct_parents(priority_queue* pq, int index){
     int parent_index = (index - 1) / 2;
-    if(index && parent_index && 
-        pq->queue[parent_index]->value > pq->queue[index]->value){
+    if(index && pq->queue[parent_index]->value > pq->queue[index]->value){
         swap(pq->queue[parent_index], pq->queue[index]);
         correct_parents(pq, parent_index);
     }
@@ -43,13 +50,13 @@ void correct_children(priority_queue* pq, int index){
     int left = 2 * index + 1;
     int right = 2 * index + 2;
 
-    if (left < pq->size && pq->queue[left] < pq->queue[smallest]){
-            smallest = left;
-        }
+    if (left < pq->size && pq->queue[left]->value < pq->queue[smallest]->value){
+        smallest = left;
+    }
 
-    if (right < pq->size && pq->queue[right] < pq->queue[smallest]){
-            smallest = right;
-        }
+    if (right < pq->size && pq->queue[right]->value < pq->queue[smallest]->value){
+        smallest = right;
+    }
 
     if (smallest != index) {
         swap(pq->queue[index], pq->queue[smallest]);
@@ -57,12 +64,10 @@ void correct_children(priority_queue* pq, int index){
     }
 }
 
-node* remove_from_priority_queue(priority_queue* pq){
-    if(!pq->size)
-        return NULL;
-
-    node* n = pq->queue[0];
-    pq->queue[0] = pq->queue[--pq->size];
+node remove_from_priority_queue(priority_queue* pq){
+    node n = *pq->queue[0];
+    node bottom = *pq->queue[--pq->size];    
+    init_node(pq->queue[0], bottom.x, bottom.y, bottom.value);
     correct_children(pq, 0);
     return n;
 }

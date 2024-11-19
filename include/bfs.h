@@ -2,7 +2,6 @@
 #define BFS_H
 
 #include "../include/utils.h"
-#include <stdio.h>
 
 float breadth_first_search(float** board, int height, int width, 
                 int x_start, int y_start, int x_end, int y_end);

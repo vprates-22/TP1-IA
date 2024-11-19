@@ -1,37 +1,39 @@
 #include "../include/ucs.h"
-#include <stdio.h>
 
 void verify_ucs_neighbors(float** board, int height, int width, 
-                int** visited, node** path, priority_queue* pq, node* last_node){
-    int x = last_node->x;
-    int y = last_node->y;
-    int value = last_node->value;
+                int** visited, node** path, priority_queue* pq, node last_node){
+    int x = last_node.x;
+    int y = last_node.y;
+    float value = last_node.value;
 
     for(int i = -1; i < 2; i++){
         for(int j = -1 ; j < 2; j++){
             // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
-            if(i == j || i+j == 0) 
+            if(i == j || i+j == 0){
                 continue;
-            // printf("%d %d\n", i, j);
+            }
             // impede segmentation fault
             if(0 > y+j || y+j >= height || 
-               0 > x+i || x+i >= width) 
+               0 > x+i || x+i >= width){
                 continue;
+            }
             // verifica se é parede
-            if(board[y+j][x+i] < 0)
+            if(board[y+j][x+i] < 0){
                 continue;
+            }
             // verifica se já foi visto ou adicionada à fila
-            if(visited[y+j][x+i]) 
+            if(visited[y+j][x+i]){
                 continue;
+            }
             
             if(path[y+j][x+i].value < 0 ||
                value + board[y+j][x+i] < path[y+j][x+i].value){
+                
                 path[y+j][x+i].x = x;
                 path[y+j][x+i].y = y;
                 path[y+j][x+i].value = value + board[y+j][x+i];
             }
 
-            printf("%d %d\n", y+j, x+i);
             add_to_priority_queue(pq, x+i, y+j, value + board[y+j][x+i]);
         }
     }
@@ -39,28 +41,29 @@ void verify_ucs_neighbors(float** board, int height, int width,
 
 float uniform_cost_search(float** board, int height, int width, 
                 int x_start, int y_start, int x_end, int y_end){
-    node* n;
+    node n;
     priority_queue* pq = init_priority_queue(height * width);
 
     node** paths = create_path_matrix(height, width);
     int** visited = create_visited_matrix(height, width);
 
-    paths[y_start][x_start].value = 0;
+    paths[y_start][x_start].value = 0.0;
 
     add_to_priority_queue(pq, x_start, y_start, 0.0);
     
     while(pq->size != 0){
         n = remove_from_priority_queue(pq);
-
-        // if(!visited[n->y][n->x]){
-        //     if(n->x == x_end && n->y == y_end)
-        //         break;
-        //     verify_ucs_neighbors(board, height, width, visited, paths, pq, n);
-        // }
-        // visited[n->y][n->x] = 1;   
-        // free(n);    
+        
+        if(!visited[n.y][n.x]){
+            if(n.x == x_end && n.y == y_end){
+                break;
+            }
+         
+            verify_ucs_neighbors(board, height, width, visited, paths, pq, n);
+        }
+        
+        visited[n.y][n.x] = 1;
     }
-    // free_matrix((void**)pq, height*width);
 
-    // return n->value;
+    return n.value;
 }
