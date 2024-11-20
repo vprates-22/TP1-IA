@@ -33,7 +33,7 @@ void verify_bfs_neighbors(float** board, int height, int width,
     }
 }
 
-float breadth_first_search(float** board, int height,  int width,
+void breadth_first_search(float** board, int height,  int width,
                           int x_start,   int y_start, int x_end, int y_end){
     queue_node* n;
     queue* q = init_queue();
@@ -51,6 +51,9 @@ float breadth_first_search(float** board, int height,  int width,
 
         if(!visited[n->n.y][n->n.x]){
             if(n->n.y == y_end && n->n.x == x_end){
+                printf("%.2f ", n->n.value);
+                print_path(paths, x_end, y_end);
+                printf("\n");
                 break;
             }
             verify_bfs_neighbors(board, height, width, 
@@ -61,6 +64,4 @@ float breadth_first_search(float** board, int height,  int width,
         free(n);
     }
     free_queue(q);
-
-    return n->n.value;
 }

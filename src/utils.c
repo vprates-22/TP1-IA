@@ -37,3 +37,10 @@ void free_matrix(void** board, int height){
     }
     free(board);
 }
+
+void print_path(node** paths, int x, int y){
+    if(paths[y][x].value != 0){
+        print_path(paths, paths[y][x].x, paths[y][x].y);
+    }    
+    printf("(%d, %d) ", x, y);
+}

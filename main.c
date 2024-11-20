@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "./include/greedy.h"
 #include "./include/utils.h"
 #include "./include/queue.h"
 #include "./include/bfs.h"
@@ -58,10 +59,8 @@ int main(int argc, char** argv){
 
     board = read_board(argv[1], &height, &width);
 
-    float value = uniform_cost_search(board, height, width,
-                        x_start, y_start, x_end, y_end);
-
-    printf("%f\n", value);
+    greedy(board, height, width,
+            x_start, y_start, x_end, y_end);
 
     free_matrix((void**)board, height);
 

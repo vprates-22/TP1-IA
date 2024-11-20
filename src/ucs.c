@@ -9,22 +9,18 @@ void verify_ucs_neighbors(float** board, int height, int width,
     for(int i = -1; i < 2; i++){
         for(int j = -1 ; j < 2; j++){
             // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
-            if(i == j || i+j == 0){
+            if(i == j || i+j == 0)
                 continue;
-            }
             // impede segmentation fault
             if(0 > y+j || y+j >= height || 
-               0 > x+i || x+i >= width){
+               0 > x+i || x+i >= width)
                 continue;
-            }
             // verifica se é parede
-            if(board[y+j][x+i] < 0){
+            if(board[y+j][x+i] < 0)
                 continue;
-            }
             // verifica se já foi visto ou adicionada à fila
-            if(visited[y+j][x+i]){
+            if(visited[y+j][x+i])
                 continue;
-            }
             
             if(path[y+j][x+i].value < 0 ||
                value + board[y+j][x+i] < path[y+j][x+i].value){
@@ -39,7 +35,7 @@ void verify_ucs_neighbors(float** board, int height, int width,
     }
 }
 
-float uniform_cost_search(float** board, int height, int width, 
+void uniform_cost_search(float** board, int height, int width, 
                 int x_start, int y_start, int x_end, int y_end){
     node n;
     priority_queue* pq = init_priority_queue(height * width);
@@ -56,6 +52,9 @@ float uniform_cost_search(float** board, int height, int width,
         
         if(!visited[n.y][n.x]){
             if(n.x == x_end && n.y == y_end){
+                printf("%.2f ", n.value);
+                print_path(paths, x_end, y_end);
+                printf("\n");
                 break;
             }
          
@@ -64,6 +63,4 @@ float uniform_cost_search(float** board, int height, int width,
         
         visited[n.y][n.x] = 1;
     }
-
-    return n.value;
 }
