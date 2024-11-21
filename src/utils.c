@@ -23,7 +23,7 @@ int** create_visited_matrix(int height, int width){
 
 node** create_path_matrix(int height, int width){
     node* default_value = malloc(sizeof(node));
-    init_node(default_value, -1, -1, -1);
+    init_node(default_value, -1, -1, -1, -1);
     void** matrix = create_matrix(sizeof(node), height, width, default_value);
     free(default_value);
 
@@ -43,4 +43,23 @@ void print_path(node** paths, int x, int y){
         print_path(paths, paths[y][x].x, paths[y][x].y);
     }    
     printf("(%d, %d) ", x, y);
+}
+
+int check_valid_neighbors(float** board, int**visited, int x, int y, 
+                        int i, int j, int height, int width){
+    // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
+    if(i == j || i+j == 0)
+        return 0;
+    // impede segmentation fault
+    if(0 > y+j || y+j >= height || 
+        0 > x+i || x+i >= width)
+        return 0;
+    // verifica se é parede
+    if(board[y+j][x+i] < 0)
+        return 0;
+    // verifica se já foi visto ou adicionada à fila
+    if(visited[y+j][x+i])
+        return 0;
+
+    return 1;
 }

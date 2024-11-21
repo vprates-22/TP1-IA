@@ -2,8 +2,7 @@
 #include <stdlib.h>
 
 #include "./include/greedy.h"
-#include "./include/utils.h"
-#include "./include/queue.h"
+#include "./include/a_star.h"
 #include "./include/bfs.h"
 #include "./include/ucs.h"
 
@@ -49,18 +48,32 @@ float** read_board(char* input_file, int* height, int* width){
 }
 
 int main(int argc, char** argv){
-    int x_start = atoi(argv[2]);
-    int y_start = atoi(argv[3]);
-    int x_end   = atoi(argv[4]);
-    int y_end   = atoi(argv[5]);
+    int x_start = atoi(argv[3]);
+    int y_start = atoi(argv[4]);
+    int x_end   = atoi(argv[5]);
+    int y_end   = atoi(argv[6]);
     
     int height, width;
     float** board;
 
     board = read_board(argv[1], &height, &width);
 
-    greedy(board, height, width,
-            x_start, y_start, x_end, y_end);
+    if(strcmp(argv[2], "BFS") == 0){
+        breadth_first_search(board, height, width,
+                x_start, y_start, x_end, y_end);
+    } else if(strcmp(argv[2], "IDS") == 0){
+        // uniform_cost_search(board, height, width,
+        //         x_start, y_start, x_end, y_end);
+    } else if(strcmp(argv[2], "UCS") == 0){
+        uniform_cost_search(board, height, width,
+                x_start, y_start, x_end, y_end);
+    } else if(strcmp(argv[2], "Greedy") == 0){
+        greedy(board, height, width,
+                x_start, y_start, x_end, y_end);
+    } else if(strcmp(argv[2], "Astar") == 0){
+        a_star(board, height, width,
+                x_start, y_start, x_end, y_end);
+    }    
 
     free_matrix((void**)board, height);
 

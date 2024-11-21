@@ -8,18 +8,7 @@ void verify_ucs_neighbors(float** board, int height, int width,
 
     for(int i = -1; i < 2; i++){
         for(int j = -1 ; j < 2; j++){
-            // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
-            if(i == j || i+j == 0)
-                continue;
-            // impede segmentation fault
-            if(0 > y+j || y+j >= height || 
-               0 > x+i || x+i >= width)
-                continue;
-            // verifica se é parede
-            if(board[y+j][x+i] < 0)
-                continue;
-            // verifica se já foi visto ou adicionada à fila
-            if(visited[y+j][x+i])
+            if(!check_valid_neighbors(board, visited, x, y, i, j, height, width))
                 continue;
             
             if(path[y+j][x+i].value < 0 ||
@@ -30,7 +19,7 @@ void verify_ucs_neighbors(float** board, int height, int width,
                 path[y+j][x+i].value = value + board[y+j][x+i];
             }
 
-            add_to_priority_queue(pq, x+i, y+j, value + board[y+j][x+i]);
+            add_to_priority_queue(pq, x+i, y+j, value + board[y+j][x+i], 0.0);
         }
     }
 }
@@ -45,21 +34,22 @@ void uniform_cost_search(float** board, int height, int width,
 
     paths[y_start][x_start].value = 0.0;
 
-    add_to_priority_queue(pq, x_start, y_start, 0.0);
+    add_to_priority_queue(pq, x_start, y_start, 0.0, 0.0);
     
     while(pq->size != 0){
         n = remove_from_priority_queue(pq);
         
-        if(!visited[n.y][n.x]){
-            if(n.x == x_end && n.y == y_end){
-                printf("%.2f ", n.value);
-                print_path(paths, x_end, y_end);
-                printf("\n");
-                break;
-            }
-         
-            verify_ucs_neighbors(board, height, width, visited, paths, pq, n);
+        if(visited[n.y][n.x])
+            continue;
+
+        if(n.x == x_end && n.y == y_end){
+            printf("%.1f ", n.value);
+            print_path(paths, x_end, y_end);
+            printf("\n");
+            break;
         }
+        
+        verify_ucs_neighbors(board, height, width, visited, paths, pq, n);
         
         visited[n.y][n.x] = 1;
     }

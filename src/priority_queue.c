@@ -18,14 +18,17 @@ void swap(node* a, node* b){
     int x = a->x;
     int y = a->y;
     float value = a->value;
+    float real_value = a->real_value;
 
     a->x = b->x;
     a->y = b->y;
     a->value = b->value;
+    a->real_value = b->real_value;
     
     b->x = x;
     b->y = y;
     b->value = value;
+    b->real_value = real_value;
 }
 
 void correct_parents(priority_queue* pq, int index){
@@ -36,11 +39,12 @@ void correct_parents(priority_queue* pq, int index){
     }
 }
 
-void add_to_priority_queue(priority_queue* pq, int x, int y, float value){
+void add_to_priority_queue(priority_queue* pq, int x, int y,
+                             float value, float real_value){
     if(pq->size == pq->max_size) 
         return;
 
-    init_node(pq->queue[pq->size], x, y, value);
+    init_node(pq->queue[pq->size], x, y, value, real_value);
     correct_parents(pq, pq->size);
     pq->size++;
 }
@@ -67,7 +71,8 @@ void correct_children(priority_queue* pq, int index){
 node remove_from_priority_queue(priority_queue* pq){
     node n = *pq->queue[0];
     node bottom = *pq->queue[--pq->size];    
-    init_node(pq->queue[0], bottom.x, bottom.y, bottom.value);
+    init_node(pq->queue[0], bottom.x, bottom.y, 
+                    bottom.value, bottom.real_value);
     correct_children(pq, 0);
     return n;
 }

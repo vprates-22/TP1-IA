@@ -12,24 +12,13 @@ float verify_greedy_neighbors(float** board, int height, int width,
 
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
-            // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
-            if(i == j || i + j == 0)
-                continue;
-            // impede segmentation fault
-            if(0 > (*y)+j || (*y)+j >= height || 
-               0 > (*x)+i || (*x)+i >= width)
-                continue;
-            // verifica se é parede
-            if(board[(*y)+j][(*x)+i] < 0)
-                continue;
-            // verifica se já foi visto ou adicionada à fila
-            if(visited[(*y)+j][(*x)+i])
+            if(!check_valid_neighbors(board, visited, *x, *y, i, j, height, width))
                 continue;
 
             int dist = abs(y_end - ((*y) + j)) + abs(x_end - ((*x) + i));
 
             if(board[(*y)+j][(*x)+i] < best_val ||
-            (board[(*y)+j][(*x)+i] < best_val && dist < best_dist)
+            (board[(*y)+j][(*x)+i] == best_val && dist < best_dist)
             ){
                 temp_x = (*x) + i;
                 temp_y = (*y) + j;
@@ -65,8 +54,8 @@ void greedy(float** board, int height, int width,
 
     while(1){
         if(x == x_end && y == y_end){
-            printf("%f ", value);
-            print_path(paths, x_end, y_end);
+            printf("%.1f ", value);
+            print_path(paths, x, y);
             printf("\n");
             return;
         }
@@ -80,7 +69,7 @@ void greedy(float** board, int height, int width,
 
         if(x == x_prior && y == y_prior){
             printf("Caminho não encontrado\n");
-            printf("%f ", value);
+            printf("%.1f ", value);
             print_path(paths, x, y);
             printf("\n");
             return;

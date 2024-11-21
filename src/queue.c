@@ -3,7 +3,7 @@
 queue_node* init_queue_node(int x, int y, float value){
     queue_node* n = malloc(sizeof(queue_node));
     
-    init_node(&(n->n), x, y, value);
+    init_node(&(n->n), x, y, value, value);
 
     n->prior = NULL;
     n->next = NULL;

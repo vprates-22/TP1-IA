@@ -5,8 +5,9 @@ typedef struct{
     int x;
     int y;
     float value;
+    float real_value;
 } node;
 
-void init_node(node* n, int x, int y, float value);
+void init_node(node* n, int x, int y, float value, float real_value);
 
 #endif

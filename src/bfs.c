@@ -9,18 +9,9 @@ void verify_bfs_neighbors(float** board, int height, int width,
 
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
-            // só permite que sejam (-1,0)/(0,-1)/(0,1)/(1,0)
-            if(i == j || i+j == 0) 
-                continue;
-            // impede segmentation fault
-            if(0 > y+j || y+j >= height || 
-               0 > x+i || x+i >= width) 
-                continue;
-            // verifica se é parede
-            if(board[y+j][x+i] < 0)
-                continue;
-            // verifica se já foi visto ou adicionada à fila
-            if(visited[y+j][x+i] || path[y+j][x+i].value != -1) 
+            if(!check_valid_neighbors(board, visited, x, y, i, j, height, width))
+                continue;            
+            if(path[y+j][x+i].value != -1) 
                 continue;
 
             // o node que antecedeu o vizinho
@@ -51,7 +42,7 @@ void breadth_first_search(float** board, int height,  int width,
 
         if(!visited[n->n.y][n->n.x]){
             if(n->n.y == y_end && n->n.x == x_end){
-                printf("%.2f ", n->n.value);
+                printf("%.1f ", n->n.value);
                 print_path(paths, x_end, y_end);
                 printf("\n");
                 break;
