@@ -38,7 +38,6 @@ int depth_limited_search(int depth, float** board, int height, int width,
         }
         if(depth < 0)
             return 0;
-
         
     }
 
