@@ -39,24 +39,24 @@ void greedy(float** board, int height, int width,
     node** paths = create_path_matrix(height, width);
     int** visited = create_visited_matrix(height, width);
 
-    paths[y_start][x_start].value = 0.0;
+    paths[y_start][x_start].cost = 0.0;
 
     int x = x_start;
     int y = y_start;
-    float value = 0.0;
+    float cost = 0.0;
 
     int x_prior = x;
     int y_prior = y;
 
     paths[y][x].x = x;
     paths[y][x].y = y;
-    paths[y][x].value = value;
+    paths[y][x].cost = cost;
 
     while(1){
         if(x == x_end && y == y_end){
-            printf("%.1f ", value);
-            print_path(paths, x, y);
-            printf("\n");
+            node *n;
+            init_node(n, x, y, cost, 0.0);
+            print_result(paths, *n);
             return;
         }
 
@@ -64,19 +64,20 @@ void greedy(float** board, int height, int width,
         y_prior = y;
         
         visited[y][x] = 1;
-        value += verify_greedy_neighbors(board, height, width, 
+        cost += verify_greedy_neighbors(board, height, width, 
                                 visited, &x, &y, x_end, y_end);
 
         if(x == x_prior && y == y_prior){
+            node *n;
+            init_node(n, x, y, cost, 0.0);
+            
             printf("Caminho não encontrado\n");
-            printf("%.1f ", value);
-            print_path(paths, x, y);
-            printf("\n");
+            print_result(paths, *n);
             return;
         }
 
         paths[y][x].x = x_prior;
         paths[y][x].y = y_prior;
-        paths[y][x].value = value;
+        paths[y][x].cost = cost;
     }
 }

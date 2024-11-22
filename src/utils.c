@@ -39,10 +39,16 @@ void free_matrix(void** board, int height){
 }
 
 void print_path(node** paths, int x, int y){
-    if(paths[y][x].value != 0){
+    if(paths[y][x].cost != 0){
         print_path(paths, paths[y][x].x, paths[y][x].y);
     }    
-    printf("(%d, %d) ", x, y);
+    printf("(%d,%d) ", x, y);
+}
+
+void print_result(node** paths, node n){
+    printf("%.1f ", n.real_value);
+    print_path(paths, n.x, n.y);
+    printf("\n");
 }
 
 int check_valid_neighbors(float** board, int**visited, int x, int y, 

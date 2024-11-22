@@ -4,10 +4,10 @@
 typedef struct{
     int x;
     int y;
-    float value;
+    float cost;
     float real_value;
 } node;
 
-void init_node(node* n, int x, int y, float value, float real_value);
+void init_node(node* n, int x, int y, float cost, float real_value);
 
 #endif

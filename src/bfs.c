@@ -4,21 +4,21 @@ void verify_bfs_neighbors(float** board, int height, int width,
                       int** visited, node** path, queue* q, queue_node* last_node){
     int x = last_node->n.x;
     int y = last_node->n.y;
-    float val = last_node->n.value;
+    float val = last_node->n.cost;
     queue_node* n;
 
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
             if(!check_valid_neighbors(board, visited, x, y, i, j, height, width))
                 continue;            
-            if(path[y+j][x+i].value != -1) 
+            if(path[y+j][x+i].cost != -1) 
                 continue;
 
             // o node que antecedeu o vizinho
             path[y+j][x+i].x = x;
             path[y+j][x+i].y = y;
-            path[y+j][x+i].value = val + board[y+j][x+i];
-            n = init_queue_node(x+i, y+j, val + board[y+j][x+i]); // cria o node
+            path[y+j][x+i].cost = val + board[y+j][x+i];
+            n = init_queue_node(x+i, y+j, val + board[y+j][x+i], 0); // cria o node
             add_to_queue(q, n); // adiciona à fila
         }
     }
@@ -32,8 +32,8 @@ void breadth_first_search(float** board, int height,  int width,
     node** paths = create_path_matrix(height, width);
     int** visited = create_visited_matrix(height, width);
 
-    n = init_queue_node(x_start, y_start, 0.0);
-    paths[y_start][x_start].value = 0;
+    n = init_queue_node(x_start, y_start, 0.0, 0.0);
+    paths[y_start][x_start].cost = 0;
 
     add_to_queue(q, n);
 
@@ -42,9 +42,7 @@ void breadth_first_search(float** board, int height,  int width,
 
         if(!visited[n->n.y][n->n.x]){
             if(n->n.y == y_end && n->n.x == x_end){
-                printf("%.1f ", n->n.value);
-                print_path(paths, x_end, y_end);
-                printf("\n");
+                print_result(paths, n->n);
                 break;
             }
             verify_bfs_neighbors(board, height, width, 

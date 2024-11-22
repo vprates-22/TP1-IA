@@ -1,9 +1,9 @@
 #include "../include/queue.h"
 
-queue_node* init_queue_node(int x, int y, float value){
+queue_node* init_queue_node(int x, int y, float cost, float real_value){
     queue_node* n = malloc(sizeof(queue_node));
     
-    init_node(&(n->n), x, y, value, value);
+    init_node(&(n->n), x, y, cost, real_value);
 
     n->prior = NULL;
     n->next = NULL;
@@ -22,7 +22,7 @@ queue* init_queue(){
 }
 
 void add_to_queue(queue* q, queue_node* n){
-    if(q->size == 0){
+    if(q->size++ == 0){
         q->top = n;
     } else {
         q->bottom->next = n;
@@ -30,7 +30,6 @@ void add_to_queue(queue* q, queue_node* n){
     }
 
     q->bottom = n;
-    q->size++;
 }
 
 queue_node* remove_from_queue(queue* q, int first){
@@ -47,14 +46,14 @@ queue_node* remove_from_queue(queue* q, int first){
         q->bottom = q->bottom->prior;
     }
 
-    q->size--;
-
-    if(q->size == 0){
-        if(first)
-            q->bottom = NULL;
-        else
-            q->top = NULL;
+    if(--q->size != 0){
+        return n;
     }
+
+    if(first)
+        q->bottom = NULL;
+    else
+        q->top = NULL;
 
     return n;
 }

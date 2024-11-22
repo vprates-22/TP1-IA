@@ -10,25 +10,25 @@ void verify_a_star_neighbors(float** board, int height, int width,
     
     int x = last_node.x;
     int y = last_node.y;
-    float value = last_node.real_value;
+    float real_cost = last_node.real_value;
     
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
             if(!check_valid_neighbors(board, visited, x, y, i, j, height, width))
                 continue;
 
-            float new_val = value + board[y+j][x+i];
-            float old_val = path[y+j][x+i].real_value;
-            float pred_val = new_val + heuristic(x+i, y+j, x_end, y_end);
+            float new_cost = real_cost + board[y+j][x+i];
+            float old_cost = path[y+j][x+i].real_value;
+            float pred_cost = new_cost + heuristic(x+i, y+j, x_end, y_end);
 
-            if(old_val == -1 || new_val < old_val){
+            if(old_cost == -1 || new_cost < old_cost){
                 path[y+j][x+i].x = x;
                 path[y+j][x+i].y = y;
-                path[y+j][x+i].value = pred_val;
-                path[y+j][x+i].real_value = new_val;
+                path[y+j][x+i].cost = pred_cost;
+                path[y+j][x+i].real_value = new_cost;
             }
             
-            add_to_priority_queue(pq, x+i, y+j, pred_val, new_val);
+            add_to_priority_queue(pq, x+i, y+j, pred_cost, new_cost);
         }
     }
 }
@@ -41,7 +41,7 @@ void a_star(float** board, int height, int width,
     int** visited = create_visited_matrix(height, width);
     node** paths = create_path_matrix(height, width);
 
-    paths[y_start][x_start].value = 0;
+    paths[y_start][x_start].cost = 0;
 
     add_to_priority_queue(pq, x_start, y_start, 0.0, 0.0);
 
@@ -54,9 +54,7 @@ void a_star(float** board, int height, int width,
         visited[n.y][n.x] = 1;
 
         if(n.x == x_end && n.y == y_end){
-            printf("%.1f ", n.real_value);
-            print_path(paths, n.x, n.y);
-            printf("\n");
+            print_result(paths, n);
             return;
         }
 
