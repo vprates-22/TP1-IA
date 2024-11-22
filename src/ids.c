@@ -53,5 +53,5 @@ void iterative_deepening_search(float** board, int height, int width,
         max_depth++;
     }
 
-    print_result();
+    print_result(paths, n);
 }
