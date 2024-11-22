@@ -17,7 +17,7 @@ void correct_children(priority_queue* pq, int index);
 priority_queue* init_priority_queue(long max_size);
 
 void add_to_priority_queue(priority_queue* pq, int x, int y, 
-                            float cost, float real_value);
+                            float cost, float other_value);
 node remove_from_priority_queue(priority_queue* pq);
 
 #endif

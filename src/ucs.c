@@ -19,7 +19,7 @@ void verify_ucs_neighbors(float** board, int height, int width,
                 path[y+j][x+i].cost = cost + board[y+j][x+i];
             }
 
-            add_to_priority_queue(pq, x+i, y+j, cost + board[y+j][x+i], 0.0);
+            add_to_priority_queue(pq, x+i, y+j, cost + board[y+j][x+i], cost + board[y+j][x+i]);
         }
     }
 }

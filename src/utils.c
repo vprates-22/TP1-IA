@@ -46,7 +46,7 @@ void print_path(node** paths, int x, int y){
 }
 
 void print_result(node** paths, node n){
-    printf("%.1f ", n.real_value);
+    printf("%.1f ", n.other_value);
     print_path(paths, n.x, n.y);
     printf("\n");
 }

@@ -5,6 +5,7 @@
 #include "./include/a_star.h"
 #include "./include/bfs.h"
 #include "./include/ucs.h"
+#include "./include/ids.h"
 
 float** read_board(char* input_file, int* height, int* width){
     FILE* file;
@@ -62,8 +63,8 @@ int main(int argc, char** argv){
         breadth_first_search(board, height, width,
                 x_start, y_start, x_end, y_end);
     } else if(strcmp(argv[2], "IDS") == 0){
-        // uniform_cost_search(board, height, width,
-        //         x_start, y_start, x_end, y_end);
+        iterative_deepening_search(board, height, width,
+                x_start, y_start, x_end, y_end);
     } else if(strcmp(argv[2], "UCS") == 0){
         uniform_cost_search(board, height, width,
                 x_start, y_start, x_end, y_end);

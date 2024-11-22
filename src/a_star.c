@@ -10,7 +10,7 @@ void verify_a_star_neighbors(float** board, int height, int width,
     
     int x = last_node.x;
     int y = last_node.y;
-    float real_cost = last_node.real_value;
+    float real_cost = last_node.other_value;
     
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
@@ -18,14 +18,14 @@ void verify_a_star_neighbors(float** board, int height, int width,
                 continue;
 
             float new_cost = real_cost + board[y+j][x+i];
-            float old_cost = path[y+j][x+i].real_value;
+            float old_cost = path[y+j][x+i].other_value;
             float pred_cost = new_cost + heuristic(x+i, y+j, x_end, y_end);
 
             if(old_cost == -1 || new_cost < old_cost){
                 path[y+j][x+i].x = x;
                 path[y+j][x+i].y = y;
                 path[y+j][x+i].cost = pred_cost;
-                path[y+j][x+i].real_value = new_cost;
+                path[y+j][x+i].other_value = new_cost;
             }
             
             add_to_priority_queue(pq, x+i, y+j, pred_cost, new_cost);

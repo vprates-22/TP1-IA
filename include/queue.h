@@ -16,13 +16,11 @@ typedef struct{
     queue_node* bottom;
 } queue;
 
-queue_node* init_queue_node(int x, int y, float cost, float real_value);
+queue_node* init_queue_node(int x, int y, float cost, float other_value);
 
 queue* init_queue();
 void add_to_queue(queue* q, queue_node* n);
-queue_node* remove_from_queue(queue *q, int first);
-queue_node* fifo_remove_from_queue(queue* q);
-queue_node* lifo_remove_from_queue(queue* q);
+queue_node* remove_from_queue(queue *q);
 void free_queue(queue* q);
 
 #endif

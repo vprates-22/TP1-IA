@@ -5,8 +5,6 @@ float verify_greedy_neighbors(float** board, int height, int width,
     float val = 0.0;
     float best_val = __INT_MAX__;
 
-    int best_dist = __INT_MAX__;
-    
     int temp_x = *x;
     int temp_y = *y;
 
@@ -15,11 +13,9 @@ float verify_greedy_neighbors(float** board, int height, int width,
             if(!check_valid_neighbors(board, visited, *x, *y, i, j, height, width))
                 continue;
 
-            int dist = abs(y_end - ((*y) + j)) + abs(x_end - ((*x) + i));
+            if(board[(*y)+j][(*x)+i] < best_val){
+                best_val = board[(*y)+j][(*x)+i];
 
-            if(board[(*y)+j][(*x)+i] < best_val ||
-            (board[(*y)+j][(*x)+i] == best_val && dist < best_dist)
-            ){
                 temp_x = (*x) + i;
                 temp_y = (*y) + j;
                 val = board[(*y)+j][(*x)+i];
@@ -54,9 +50,9 @@ void greedy(float** board, int height, int width,
 
     while(1){
         if(x == x_end && y == y_end){
-            node *n;
-            init_node(n, x, y, cost, 0.0);
-            print_result(paths, *n);
+            node n;
+            init_node(&n, x, y, cost, cost);
+            print_result(paths, n);
             return;
         }
 
@@ -68,16 +64,17 @@ void greedy(float** board, int height, int width,
                                 visited, &x, &y, x_end, y_end);
 
         if(x == x_prior && y == y_prior){
-            node *n;
-            init_node(n, x, y, cost, 0.0);
+            node n;
+            init_node(&n, x, y, cost, cost);
             
             printf("Caminho não encontrado\n");
-            print_result(paths, *n);
+            print_result(paths, n);
             return;
         }
 
         paths[y][x].x = x_prior;
         paths[y][x].y = y_prior;
         paths[y][x].cost = cost;
+        paths[y][x].other_value = cost;
     }
 }
