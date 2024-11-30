@@ -46,7 +46,7 @@ void print_path(node** paths, int x, int y){
 }
 
 void print_result(node** paths, node n){
-    printf("%.1f ", n.other_value);
+    printf("%.1f ", n.cost);
     print_path(paths, n.x, n.y);
     printf("\n");
 }
@@ -68,4 +68,8 @@ int check_valid_neighbors(float** board, int**visited, int x, int y,
         return 0;
 
     return 1;
+}
+
+int heuristic(int x, int y, int x_end, int y_end){
+    return abs(x - x_end) + abs(y - y_end);
 }

@@ -14,26 +14,24 @@ priority_queue* init_priority_queue(long max_size){
     return pq;
 }
 
-void swap(node* a, node* b){
-    int x = a->x;
-    int y = a->y;
-    float cost = a->cost;
-    float other_value = a->other_value;
+void free_priority_queue(priority_queue* pq){
+    for(int i = 0; i < pq->max_size; i++){
+        free(pq->queue[i]);
+    }
+    free(pq->queue);
+    free(pq);
+}
 
-    a->x = b->x;
-    a->y = b->y;
-    a->cost = b->cost;
-    a->other_value = b->other_value;
-    
-    b->x = x;
-    b->y = y;
-    b->cost = cost;
-    b->other_value = other_value;
+
+void swap(node* a, node* b){
+    node temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 void correct_parents(priority_queue* pq, int index){
     int parent_index = (index - 1) / 2;
-    if(index && pq->queue[parent_index]->cost > pq->queue[index]->cost){
+    if(index && pq->queue[parent_index]->other_value > pq->queue[index]->other_value){
         swap(pq->queue[parent_index], pq->queue[index]);
         correct_parents(pq, parent_index);
     }
@@ -53,11 +51,11 @@ void correct_children(priority_queue* pq, int index){
     int left = 2 * index + 1;
     int right = 2 * index + 2;
 
-    if (left < pq->size && pq->queue[left]->cost < pq->queue[smallest]->cost){
+    if (left < pq->size && pq->queue[left]->other_value < pq->queue[smallest]->other_value){
         smallest = left;
     }
 
-    if (right < pq->size && pq->queue[right]->cost < pq->queue[smallest]->cost){
+    if (right < pq->size && pq->queue[right]->other_value < pq->queue[smallest]->other_value){
         smallest = right;
     }
 

@@ -1,80 +1,59 @@
 #include "../include/greedy.h"
 
-float verify_greedy_neighbors(float** board, int height, int width,
-                            int** visited, int* x, int* y, int x_end, int y_end){
-    float val = 0.0;
-    float best_val = __INT_MAX__;
-
-    int temp_x = *x;
-    int temp_y = *y;
+void verify_greedy_neighbors(float** board, int height, int width, 
+                    int x_end, int y_end, int** visited, node** path, 
+                    priority_queue* pq, node last_node){
+    int x = last_node.x;
+    int y = last_node.y;
+    float cost = last_node.cost;
 
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
-            if(!check_valid_neighbors(board, visited, *x, *y, i, j, height, width))
+            if(!check_valid_neighbors(board, visited, x, y, i, j, height, width))
                 continue;
 
-            if(board[(*y)+j][(*x)+i] < best_val){
-                best_val = board[(*y)+j][(*x)+i];
+            float new_cost = cost + board[y+j][x+i];
+            float old_cost = path[y+j][x+i].cost;
+            float heuristic_cost = heuristic(x+i, y+j, x_end, y_end);
 
-                temp_x = (*x) + i;
-                temp_y = (*y) + j;
-                val = board[(*y)+j][(*x)+i];
+            if(old_cost == -1 || new_cost < old_cost){
+                path[y+j][x+i].x = x;
+                path[y+j][x+i].y = y;
+                path[y+j][x+i].cost = new_cost;
+                path[y+j][x+i].other_value = heuristic_cost;
             }
+            
+            add_to_priority_queue(pq, x+i, y+j, new_cost, heuristic_cost);
         }
     }
-
-    (*x) = temp_x;
-    (*y) = temp_y;
-
-    return val;
 }
 
 void greedy(float** board, int height, int width, 
         int x_start, int y_start, int x_end, int y_end){
+    node n;
+    priority_queue *pq = init_priority_queue(height * width);
 
     node** paths = create_path_matrix(height, width);
     int** visited = create_visited_matrix(height, width);
 
     paths[y_start][x_start].cost = 0.0;
 
-    int x = x_start;
-    int y = y_start;
-    float cost = 0.0;
+    add_to_priority_queue(pq, x_start, y_start, 0.0, 0.0);
 
-    int x_prior = x;
-    int y_prior = y;
+    while(pq->size != 0){
+        n = remove_from_priority_queue(pq);
 
-    paths[y][x].x = x;
-    paths[y][x].y = y;
-    paths[y][x].cost = cost;
+        if(visited[n.y][n.x])
+            continue;
 
-    while(1){
-        if(x == x_end && y == y_end){
-            node n;
-            init_node(&n, x, y, cost, cost);
+        visited[n.y][n.x] = 1;
+
+        if(n.x == x_end && n.y == y_end){
             print_result(paths, n);
             return;
         }
 
-        x_prior = x;
-        y_prior = y;
-        
-        visited[y][x] = 1;
-        cost += verify_greedy_neighbors(board, height, width, 
-                                visited, &x, &y, x_end, y_end);
-
-        if(x == x_prior && y == y_prior){
-            node n;
-            init_node(&n, x, y, cost, cost);
-            
-            printf("Caminho não encontrado\n");
-            print_result(paths, n);
-            return;
-        }
-
-        paths[y][x].x = x_prior;
-        paths[y][x].y = y_prior;
-        paths[y][x].cost = cost;
-        paths[y][x].other_value = cost;
+        verify_greedy_neighbors(board, height, width, 
+                    x_end, y_end, visited, paths, pq, n);
     }
 }

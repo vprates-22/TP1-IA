@@ -1,7 +1,12 @@
 #include "../include/ids.h"
 
-int check_ids_neighbors(int depth, float** board, int** visited, int height, int width,
-                        int x, int y, float cost, int x_end, int y_end, node** path){
+void verify_dfs_neighbors(float** board, int** visited, int height, int width, 
+                          node** path, priority_queue* pq, node last_node){
+
+    int x = last_node.x;
+    int y = last_node.y;
+    float cost = last_node.cost;
+    
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
             if(!check_valid_neighbors(board, visited, x, y, i ,j, height, width))
@@ -10,31 +15,39 @@ int check_ids_neighbors(int depth, float** board, int** visited, int height, int
             path[y+j][x+i].x = x;
             path[y+j][x+i].y = y;
             path[y+j][x+i].cost = cost + board[y+j][x+i];
-            path[y+j][x+i].other_value = cost + board[y+j][x+i];
+            path[y+j][x+i].other_value = last_node.other_value + 1;
 
-            visited[y][x] = 1;
-
-            if(depth_limited_search(depth, board, visited, height, width, x+i, y+j, cost + board[y+j][x+i], x_end, y_end, path))
-                return 1;
-
-            visited[y][x] = 0;
+            add_to_priority_queue(pq, x+i, y+j, cost + board[y+j][x+i], last_node.other_value-1);
         }
-    }
-    return 0;
+    }                
 }
 
-int depth_limited_search(int depth, float** board, int** visited, int height, int width, 
-                        int x, int y, float cost, int x_end, int y_end, node** path){
+int depth_limited_search(int max_depth, float** board, int height, int width, 
+                        int x_start, int y_start, int x_end, int y_end, node** path){
+    node n;
 
-    if(x == x_end && y == y_end){
-        return 1;
-    }
+    int** visited = create_visited_matrix(height, width);
+    priority_queue *pq = init_priority_queue(height * width);
 
-    if(depth <= 0){
-        return 0;
+    add_to_priority_queue(pq, x_start, y_start, 0.0, max_depth);
+
+    while(pq->size != 0){
+        n = remove_from_priority_queue(pq);
+
+        if(n.x == x_end && n.y == y_end)
+            return 1;
+
+        if(n.other_value == 0)
+            continue;
+
+        visited[n.y][n.x] = 1;
+
+        verify_dfs_neighbors(board, visited, height, width, path, pq, n);
     }
-    
-    return check_ids_neighbors(depth-1, board, visited, height, width, x, y, cost, x_end, y_end, path);
+    free_matrix((void**)visited, height);
+    free_priority_queue(pq);
+
+    return 0;
 }
 
 void iterative_deepening_search(float** board, int height, int width, 
@@ -42,15 +55,14 @@ void iterative_deepening_search(float** board, int height, int width,
     int max_depth = 0;
     int result = 0;
 
-    int** visited = create_visited_matrix(height, width);
     node** paths = create_path_matrix(height, width);
+    
     paths[y_start][x_start].cost = 0;
 
-
     while(!result){
-        result = depth_limited_search(max_depth, board, visited, height, width, 
-                                x_start, y_start, 0.0, x_end, y_end, paths);
         max_depth++;
+        result = depth_limited_search(max_depth, board, height, width, 
+                                x_start, y_start, x_end, y_end, paths);
     }
 
     node n;

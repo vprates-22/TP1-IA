@@ -34,6 +34,7 @@ void breadth_first_search(float** board, int height,  int width,
 
     n = init_queue_node(x_start, y_start, 0.0, 0.0);
     paths[y_start][x_start].cost = 0;
+    paths[y_start][x_start].other_value = 0;
 
     add_to_queue(q, n);
 
